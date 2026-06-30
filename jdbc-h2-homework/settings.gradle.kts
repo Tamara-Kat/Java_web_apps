@@ -1,0 +1,1 @@
+rootProject.name = "jdbc-h2-homework"
