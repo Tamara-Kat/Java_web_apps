@@ -1,5 +1,7 @@
 package com.example.database;
 
+import org.flywaydb.core.Flyway;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,8 +12,16 @@ public class Database {
     private static Database instance;
 
     private Connection connection;
+
     private Database() {
         try {
+            Flyway flyway = Flyway.configure()
+                    .dataSource(DB_URL, null, null)
+                    .locations("classpath:db/migration")
+                    .load();
+
+            flyway.migrate();
+
             connection = DriverManager.getConnection(DB_URL);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database", e);
@@ -24,6 +34,7 @@ public class Database {
         }
         return instance;
     }
+
     public Connection getConnection() {
         return connection;
     }
